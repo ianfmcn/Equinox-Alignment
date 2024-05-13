@@ -11,3 +11,8 @@ setup(
         ],
     },
 )
+
+#install the tool
+python setup.py install --prefixprefix=$HOME
+equinox --help
+
