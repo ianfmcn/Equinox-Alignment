@@ -1,16 +1,7 @@
 import io
 import sys
-import numpy
 
-def max(a, b, c): #position of max of three ints
-    if (a >= b and a >= c): 
-        return a
-    if (b >= a and b >= c): 
-        return b
-    return c
-
-def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_extension_penalty,
-		s, t):
+def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_extension_penalty, s, t):
     maxScore = None
     maxMiddle = None
     maxLower = None
@@ -32,15 +23,15 @@ def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_ext
 
     # initialize i = 0 and j = 0
     for i in range(1,n):
-        upper[i][0] = - gap_opening_penalty - (gap_extension_penalty * i)
-        middle[i][0] = - gap_opening_penalty - (gap_extension_penalty * (i-1)) 
-        lower[i][0] = - -10000 # not used
+        upper[i][0] = -(gap_opening_penalty) - (gap_extension_penalty * i)
+        middle[i][0] = -(gap_opening_penalty) - (gap_extension_penalty * (i-1)) 
+        lower[i][0] = -(-10000) # not used
         middle_backtrack[i][0] = -1 # down
     for j in range(1,m):
         upper[0][j] = -10000 # not used
         middle[0][j] =  - gap_opening_penalty - (gap_extension_penalty * (j-1))
         lower[0][j] = - gap_opening_penalty - (gap_extension_penalty * j)
-        middle_backtrack[0][j] = 1; # side
+        middle_backtrack[0][j] = 1 # side
 
     # fill in other table values
     str1 = None
@@ -53,7 +44,7 @@ def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_ext
             # lower
             down = lower[i-1][j] - gap_extension_penalty
             diag = middle[i-1][j] - gap_opening_penalty
-            lower[i][j] = max(down, diag);
+            lower[i][j] = max(down, diag)
             if (lower[i][j] == down):
                 lower_backtrack[i][j] = -1 # lower
             elif (lower[i][j] == diag):
@@ -167,7 +158,7 @@ def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_ext
     str2 = "" # t across
     i = n-1
     j = m-1
-    matrix = 0;
+    matrix = 0
     while(i > 0 or j > 0):
         # cout << i << " " << j << " m: " << matrix
 
@@ -197,7 +188,7 @@ def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_ext
             if (upper_backtrack[i][j] == -1): #down (lower)
                 matrix = -1
             elif(upper_backtrack[i][j] == 0): #diagonal arrow (match/mismatch)
-                matrix = 0;
+                matrix = 0
             str1 = str1 + "-"
             str2 = str2 + t[j-1:1] # may need to change slice bounds
             j -=1
@@ -207,7 +198,7 @@ def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_ext
     rev2 = str2[::-1]
 
     g = (maxScore, rev1, rev2)
-    return g;
+    return g
 
     # middle: diag of weight score(si, tj) 
     # lower: down of weight -extension
@@ -221,8 +212,11 @@ def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_ext
     # middle[i][j] = max{(lower[i][j]), (middle[i-1][j-1] + score), (upper[i][j])} //score = match or mismatch
 
 def main():
-    g = AffineAlignment(1, 5, 2, 1, "CCAT", "GAT")
-    sys.stdout.write(g)
+    # g = AffineAlignment(1, 5, 2, 1, "CCAT", "GAT")
+    # sys.stdout.write(str(g[0]) + " " + g[1] + " " + g[2])
     g = AffineAlignment(5, 2, 15, 5, "ACGTA", "ACT")
-    sys.stdout.write(g)
+    sys.stdout.write(str(g[0]) + " " + g[1] + " " + g[2])
     # ACGTA ACT--
+
+if __name__ == "__main__":
+    main()
