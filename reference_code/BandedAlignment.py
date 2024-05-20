@@ -81,4 +81,33 @@ def BandedAlignment(match_reward, mismatch_penalty, indel_penalty, band_paramete
     rev2 = str2[::-1]
 
     return maxScore, rev1, rev2
-  
+
+#suggestion to use argparse instead of sys 
+if __name__ == "__main__":
+    #establish arguments
+    file_index = [idx for idx, s in enumerate(sys.argv) if '.fq' in s][0]
+    seq_file = sys.argv[file_index]
+    file = open(seq_file)
+    content = file.readlines()
+    #find two instances of '>'
+    #read next line
+    index = []
+    i = 0
+    for line in content:
+        l = line.strip()
+        if len(l) > 0 and l[0] == '>':
+            index.append(i+1)
+        i += 1
+    s = content[index[0]].strip()
+    t = content[index[1]].strip()
+    file.close()
+
+    match = int(sys.argv[sys.argv.index("-m")+1])
+    mismatch = int(sys.argv[sys.argv.index("-s")+1])
+    indel = int(sys.argv[sys.argv.index("-d")+1])
+    band = int(sys.argv[sys.argv.index("-b")+1])
+        
+    alignment = BandedAlignment( match, mismatch, indel, band, s, t)
+    print(alignment)
+
+#python3 BandedAlignment.py s t -m match -s mismatch -d indel -b band
