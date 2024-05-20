@@ -1,4 +1,4 @@
-import sys
+import argparse
 import numpy as np
 
 def BandedAlignment(s, t, match_reward, mismatch_penalty, indel_penalty, band_parameter):
@@ -91,7 +91,7 @@ def BandedAlignment(s, t, match_reward, mismatch_penalty, indel_penalty, band_pa
     print(rev1)
     print(rev2)
 
-#suggestion to use argparse instead of sys 
+
 def main():
     BandedAlignment("CATA", "CAT", 1, -1, -1, 3)
     BandedAlignment("ACGTA", "ACT", 1, -1, -1, 3)
@@ -99,5 +99,27 @@ def main():
 if __name__ == "__main__":
     main()
 
+test = """
+#possible command implementation using argparse
 
-#python3 BandedAlignment.py s t -m match -s mismatch -d indel -b band
+#will need to update function so it can parse through a file with the sequence instead of having the sequence inserted directly into the command
+
+def main():
+    parser = argparse.ArgumentParser(description="Perform local alignment between two sequences with bandwidth")
+    parser.add_argument('s', type=str, help="Reference sequence")
+    parser.add_argument('t', type=str, help="Other sequence")
+    parser.add_argument('bandwidth', type=int, help="Bandwidth parameter")
+    parser.add_argument('-m', '--match', type=float, default=1, help="Match reward")  
+    parser.add_argument('-s', '--mismatch', type=float, default=-1, help="Mismatch penalty")
+    parser.add_argument('-d', '--indel', type=float, default=-1, help="Insert/delete penalty")
+
+    args = parser.parse_args()
+
+    BandedAlignment(args.s, args.t, args.match, args.mismatch, args.indel, args.bandwidth)
+
+if __name__ == "__main__":
+    main()
+
+#usage example
+#python3 BandedAlignment.py CATA CAT 3 -m 1 -s -1 -d -1 
+"""
