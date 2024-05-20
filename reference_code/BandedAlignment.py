@@ -41,7 +41,7 @@ def BandedAlignment(match_reward, mismatch_penalty, indel_penalty, band_paramete
                 diag = score[i - 1][j - 1] + mismatch_penalty
             score[i][j] = max(down, side, diag)
     
-  maxScore = score[n - 1][m - 1]
+    maxScore = score[n - 1][m - 1]
     for i in range(n - 1, 0, -1):
         for j in range(m - 1, 0, -1):
             if score[i][j] == (score[i - 1][j] - indel_penalty):
