@@ -184,7 +184,7 @@ def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_ext
                 i -= 1
                 j -= 1
         else if (matrix == -1): #lower
-            #cout << " b: " << lower_backtrack[i][j] << " ";
+            # cout << " b: " << lower_backtrack[i][j] << " ";
             if (lower_backtrack[i][j] == 1): #side (upper)
                 matrix = 1
             else if (lower_backtrack[i][j] == 0): #diagonal arrow (match/mismatch)
@@ -222,9 +222,8 @@ def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_ext
 }
 
 def main(){
-    //std::tuple<int, std::string, std::string> g = AffineAlignment(1, 5, 2, 1, "CCAT", "GAT");
-    std::tuple<int, std::string, std::string> g = AffineAlignment(5, 2, 15, 5, "ACGTA", "ACT");
-    std::cout << std::get<0>(g) <<  " " << std::get<1>(g) << " " << std::get<2>(g);
-
+    g = AffineAlignment(1, 5, 2, 1, "CCAT", "GAT");
+    g = AffineAlignment(5, 2, 15, 5, "ACGTA", "ACT");
+    sys.stdout.write(g)
     //ACGTA ACT--
 }
