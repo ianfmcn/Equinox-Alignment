@@ -14,8 +14,8 @@ def main():
 
     # Input
     # accept 1 or more input files
-    parser.add_argument("txt", help="Txt file", type=str, nargs='+')
-    #for testing parsing, use .fa or .fastq for equinox
+    # input files can be .fa or .fastq 
+    parser.add_argument("fa", help="FASTA file", type=str, nargs='+')
     
     # Output
     parser.add_argument("-o", "--out", help="Write output to file. "\
@@ -62,13 +62,20 @@ def main():
                 type=int, metavar="INT",  required=False)
     
     args = parser.parse_args()
-
+    
     # make sure there are not more than two files inputted
-    if len(args.txt) > 2:
+    if len(args.fa) > 2:
         parser.error("Input either 1 file for single read or 2 files for paired read")
+
+    # for multiple input files, files should be same format
+    if len(args.fa) == 2:
+        first = args.fa[0][args.fa[0].index("."):]
+        second = args.fa[1][args.fa[1].index("."):]
+        if first != second:
+            parser.error("Input files must be same format")
     
     # use either bandwidth align OR affine align
-    # -b is mutually exclusive with -g/-e
+    # if -b, no -g -e
     if args.b is not None:
         if (args.g is not None) or (args.e is not None):
             parser.error("Cannot use -b and -g/-e together")
