@@ -15,7 +15,7 @@ def main():
     # Input
     # accept 1 or more input files
     # input files can be .fa or .fastq 
-    parser.add_argument("fa", help="FASTA file", type=str, nargs='+')
+    parser.add_argument("fa", help="FASTA or FASTQ file(s)", type=str, nargs='+')
     
     # Output
     parser.add_argument("-o", "--out", help="Write output to file. "\
