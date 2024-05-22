@@ -31,7 +31,9 @@ def main():
                 help="indel penalty", \
                 type=int, metavar="INT",  required=True)
     
-    # Optional Arguments
+    # Optional Alignment Arguments
+
+    # group gap open and gap extend together
     gap = parser.add_argument_group(title='Affine required args', required=False)
     gap.add_argument("-g", "--gap-open", 
                 help="gap open penalty", \
@@ -40,29 +42,38 @@ def main():
                 help="gap extend penalty", \
                 type=int, metavar="INT",  required=True)
 
-    group = parser.add_mutually_exclusive_group(required=False)
-    group.add_argument("-b", "--bandwidth", \
-                help="allowed bandwidth. ", \
+    # use either bandwidth align OR affine align
+    alt = parser.add_mutually_exclusive_group(title='Alternate alignment args', required=False)
+    alt.add_argument("-b", "--bandwidth", \
+                help="allowed bandwidth", \
                 type=int, metavar="INT",  required=False)
-    group.add_argument(gap)
+    alt.add_argument(gap)
+
+    '''parser.group("Configuring output format",
+        parser:flag "-v --verbose",
+        parser:flag "--use-colors",
+        parser:option "--encoding"
+    )'''
     
+    # Other Optional Arguments
     
-    parser.add_argument("-k", "--min-seed-len", \
+    other = parser.add_argument_group(title='Other optional args', required=False)
+    other.add_argument("-k", "--min-seed-len", \
                 help="minimum seed length", \
                 type=int, metavar="INT",  required=False)
-    parser.add_argument("-c", "--max-occ", \
+    other.add_argument("-c", "--max-occ", \
                 help="max-occ", \
                 type=int, metavar="INT",  required=False)
-    parser.add_argument("-R", "--RG-line", \
+    other.add_argument("-R", "--RG-line", \
                 help="RG-line", \
                 type=int, metavar="INT",  required=False)
-    parser.add_argument("-t", "--cut-output", \
+    other.add_argument("-t", "--cut-output", \
                 help="cut-output", \
                 type=int, metavar="INT",  required=False)
-    parser.add_argument("-C", "--comment-FAST", \
+    other.add_argument("-C", "--comment-FAST", \
                 help="comment-FAST", \
                 type=int, metavar="INT",  required=False)
-    parser.add_argument("-v", "--verbose-level", \
+    other.add_argument("-v", "--verbose-level", \
                 help="verbose-level", \
                 type=int, metavar="INT",  required=False)
     
@@ -79,6 +90,8 @@ def main():
     reads = []
     for record in SeqIO.parse(args.reads, "fastq"):
         reads.append(str(record.seq))
+    
+
     
     align = locAL("GATA", "GA", args.match_reward, args.mismatch_penalty, args.indel_penalty, True)
     print(align)
