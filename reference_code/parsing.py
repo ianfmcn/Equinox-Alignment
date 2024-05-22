@@ -3,8 +3,8 @@
 import argparse
 from Bio import SeqIO
 from locAL import main as locAL
-from BandedAlignment import main as BandedAL
-#from AffineAlignment import main as AffineAL
+from BandedAlignment import BandedAlignment as BandedAL
+from AffineAlignment import AffineAlignment as AffineAL
 
 def main():
     parser = argparse.ArgumentParser(
@@ -29,8 +29,8 @@ def main():
     al.add_argument("-s", help="penalty for a mismatch", \
                 type=int, metavar="INT",  required=True)
     # in bwa mem, -s == -d (I think)
-    al.add_argument("-d", help="penalty for an indel", \
-                type=int, metavar="INT",  required=True)
+    al.add_argument("-d", help="penalty for an indel. Required for local and banded alignment, but not for affine.", \
+                type=int, metavar="INT",  required=False)
     
     # Optional Alignment Arguments
 
@@ -82,6 +82,10 @@ def main():
     # if -g, must have -e
     if (args.g is not None and args.e is None) or (args.g is None and args.e is not None):
         parser.error("Must use -g/-e together")
+    
+    # penalties must be negative (-s -d -g -e)
+    if args.s >= 0:
+        parser.error("Alignment penalties must be negative")
 
     # Read and parse sequences of fasta and fastq files
 
@@ -94,9 +98,31 @@ def main():
     reads = []
     for record in SeqIO.parse(args.reads, "fastq"):
         reads.append(str(record.seq))
-
+        
     #default for now
-    align = locAL("GATA", "GA", args.m, args.s, args.d, True)
+    s = "GATA"
+    t = "GA"
+
+    # decide which alignment to use
+    if args.b is not None:
+        if args.d is None:
+            parser.error("the following arguments are required: -d")    
+        if args.d >= 0:
+            parser.error("Alignment penalties must be negative")
+        align = BandedAL(s, t, args.m, args.s, args.d, args.b)
+    elif args.g is not None:
+        if args.d is not None:
+            parser.error("the following arguments are NOT required: -d")  
+        if args.g >= 0 or args.e >= 0:
+            parser.error("Alignment penalties must be negative")
+        align = "affine" #AffineAL(args.m, args.s, args.g, args.e, s, t)
+    else:
+        if args.d is None:
+            parser.error("the following arguments are required: -d")
+        if args.d >= 0:
+            parser.error("Alignment penalties must be negative")
+        align = locAL(s, t, args.m, args.s, args.d, True)
+
     print(align)
 
 
@@ -110,3 +136,5 @@ else: run locAL
 
 --> other options
 '''
+
+#s ref t genome
