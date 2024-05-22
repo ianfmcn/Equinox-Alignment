@@ -9,7 +9,7 @@ from BandedAlignment import main as BandedAL
 def main():
     parser = argparse.ArgumentParser(
         prog="equinox",
-        description="Command-line script to perform alignment of FASTQ files"
+        description="Command-line script to perform alignment of reads in FASTQ files"
     )
 
     # Input
@@ -22,30 +22,31 @@ def main():
     
     # Alignment Penalties
     al = parser.add_argument_group()
-    al.title = "Required alignment args"
-    al.add_argument("-m", help="match reward", \
+    al.title = "required arguments for local alignment"
+    al.add_argument("-m", help="reward for sequence match", \
                 type=int, metavar="INT",  required=True)
-    al.add_argument("-s", help="mismatch penalty", \
+    al.add_argument("-s", help="penalty for a mismatch", \
                 type=int, metavar="INT",  required=True)
-    al.add_argument("-d", help="indel penalty", \
+    # in bwa mem, -s == -d (I think)
+    al.add_argument("-d", help="penalty for an indel", \
                 type=int, metavar="INT",  required=True)
     
     # Optional Alignment Arguments
 
     # group alternate alignment args
     alt = parser.add_argument_group()
-    alt.title = "Alternate alignment algorithm arguments"
-    alt.add_argument("-b", help="allowed bandwidth", \
+    alt.title = "arguments for alternate alignment algorithms"
+    alt.add_argument("-b", help="allowed bandwidth for banded alignment", \
                 type=int, metavar="INT",  required=False)
-    alt.add_argument("-g",help="gap open penalty", \
+    alt.add_argument("-g",help="gap open penalty; a gap of size k cost '{-g} + {-e}*k'", \
                 type=int, metavar="INT",  required=False)
-    alt.add_argument("-e", help="gap extend penalty", \
+    alt.add_argument("-e", help="gap extend penalty for affine alignment", \
                 type=int, metavar="INT",  required=False)
     
     # Other Optional Arguments
     
     other = parser.add_argument_group()
-    other.title = "Other optional args"
+    other.title = "other optional args"
     other.add_argument("-k", help="minimum seed length", \
                 type=int, metavar="INT",  required=False)
     other.add_argument("-c", help="max-occ", \
@@ -89,6 +90,7 @@ def main():
 
 if __name__ == "__main__":#
     main()
+
 '''
 if -b: run BandedAlignment
 if -g and -e: run Affine
