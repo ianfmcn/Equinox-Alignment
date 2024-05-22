@@ -1,3 +1,4 @@
+from Bio import SeqIO
 import argparse
 import numpy as np
 
@@ -87,39 +88,53 @@ def BandedAlignment(s, t, match_reward, mismatch_penalty, indel_penalty, band_pa
     rev1 = str1[::-1]
     rev2 = str2[::-1]
     
-    print(max_score)
-    print(rev1)
-    print(rev2)
+    return max_score, rev1, rev2
 
-
+#main function included in this file for testing if the function works properly, delete afterward
 def main():
-    BandedAlignment("CATA", "CAT", 1, -1, -1, 3)
-    BandedAlignment("ACGTA", "ACT", 1, -1, -1, 3)
-
-if __name__ == "__main__":
-    main()
-
-test = """
-#possible command implementation using argparse
-
-#will need to update function so it can parse through a file with the sequence instead of having the sequence inserted directly into the command
-
-def main():
-    parser = argparse.ArgumentParser(description="Perform local alignment between two sequences with bandwidth")
-    parser.add_argument('s', type=str, help="Reference sequence")
-    parser.add_argument('t', type=str, help="Other sequence")
-    parser.add_argument('bandwidth', type=int, help="Bandwidth parameter")
-    parser.add_argument('-m', '--match', type=float, default=1, help="Match reward")  
-    parser.add_argument('-s', '--mismatch', type=float, default=-1, help="Mismatch penalty")
-    parser.add_argument('-d', '--indel', type=float, default=-1, help="Insert/delete penalty")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('reference', type=str)
+    parser.add_argument('reads', type=str)
+    parser.add_argument('bandwidth', type=int)
+    parser.add_argument('-m', '--match', type=float, default=1)
+    parser.add_argument('-s', '--mismatch', type=float, default=-1)
+    parser.add_argument('-d', '--indel', type=float, default=-1)
 
     args = parser.parse_args()
 
-    BandedAlignment(args.s, args.t, args.match, args.mismatch, args.indel, args.bandwidth)
+    # Read and parse input files
+    reference_sequences = {}
+    for record in SeqIO.parse(args.reference, "fasta"):
+        reference_sequences[record.id] = str(record.seq)
+
+    reads = []
+    for record in SeqIO.parse(args.reads, "fastq"):
+        reads.append(str(record.seq))
+
+    # Perform alignment for each read
+    for read in reads:
+        best_score = float('-inf')
+        best_aligned_ref = ""
+        best_aligned_read = ""
+        best_ref_id = ""
+
+        for ref_id, ref_seq in reference_sequences.items():
+            max_score, rev1, rev2 = BandedAlignment(ref_seq, read, args.match, args.mismatch, args.indel, args.bandwidth)
+            if max_score > best_score:
+                best_score = max_score
+                best_aligned_ref = rev1
+                best_aligned_read = rev2
+                best_ref_id = ref_id
+
+        print(f"Read: {read}")
+        print(f"Score: {best_score}")
+        print(f"{best_ref_id})")
+        print(f"{best_aligned_ref}")
+        print(f"{best_aligned_read}")
+        print("\n")
 
 if __name__ == "__main__":
     main()
 
-#usage example
-#python3 BandedAlignment.py CATA CAT 3 -m 1 -s -1 -d -1 
-"""
+#test usage example
+#python3 ./reference_code/BandedAlignment.py ./example_files/test_reference.fa ./example_files/test_sequence.fq 5 -m 1 -s -1 -d -1 > test_banded.txt
