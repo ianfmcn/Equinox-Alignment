@@ -38,9 +38,9 @@ def main():
     alt.title = "arguments for alternate alignment algorithms"
     alt.add_argument("-b", help="allowed bandwidth for banded alignment", \
                 type=int, metavar="INT",  required=False)
-    alt.add_argument("-g",help="gap open penalty; a gap of size k cost '{-g} + {-e}*k'", \
+    alt.add_argument("-g",help="gap open penalty for affine alignment", \
                 type=int, metavar="INT",  required=False)
-    alt.add_argument("-e", help="gap extend penalty for affine alignment", \
+    alt.add_argument("-e", help="gap extend penalty; a gap of size k cost '{-g} + {-e}*k'", \
                 type=int, metavar="INT",  required=False)
     
     # Other Optional Arguments
