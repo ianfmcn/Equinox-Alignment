@@ -91,10 +91,16 @@ def main():
     for record in SeqIO.parse(args.reads, "fastq"):
         reads.append(str(record.seq))
     
-
     
-    align = locAL("GATA", "GA", args.match_reward, args.mismatch_penalty, args.indel_penalty, True)
-    print(align)
+    if (args.g is not None and args.e is None) or (args.g is None and args.e is not None):
+        print('Cannot use gap open without gap extend')
+
+    if (args.g is not None):
+        print(args.g)
+
+    else:
+        align = locAL("GATA", "GA", args.match_reward, args.mismatch_penalty, args.indel_penalty, True)
+        print(align)
 
 
 if __name__ == "__main__":
