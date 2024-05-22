@@ -32,16 +32,19 @@ def main():
                 type=int, metavar="INT",  required=True)
     
     # Optional Arguments
+    gap = parser.add_argument_group(title='Affine required args', required=False)
+    gap.add_argument("-g", "--gap-open", 
+                help="gap open penalty", \
+                type=int, metavar="INT",  required=True)
+    gap.add_argument("-e", "--gap-ext", \
+                help="gap extend penalty", \
+                type=int, metavar="INT",  required=True)
+
     group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument("-b", "--bandwidth", \
                 help="allowed bandwidth. ", \
                 type=int, metavar="INT",  required=False)
-    group.add_argument("-g", "--gap-open", 
-                help="gap open penalty", \
-                type=int, metavar="INT",  required=False)
-    group.add_argument("-e", "--gap-ext", \
-                help="gap extend penalty", \
-                type=int, metavar="INT",  required=False)
+    group.add_argument(gap)
     
     
     parser.add_argument("-k", "--min-seed-len", \
