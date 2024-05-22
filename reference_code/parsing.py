@@ -13,7 +13,8 @@ def main():
     )
 
     # Input
-    parser.add_argument("txt", help="Txt file", type=str)
+    # accept 1 or more input files
+    parser.add_argument("txt", help="Txt file", type=str, nargs='+')
     #for testing parsing, use .fa or .fastq for equinox
     
     # Output
@@ -61,6 +62,10 @@ def main():
                 type=int, metavar="INT",  required=False)
     
     args = parser.parse_args()
+
+    # make sure there are not more than two files inputted
+    if len(args.txt) > 2:
+        parser.error("Input either 1 file for single read or 2 files for paired read")
     
     # use either bandwidth align OR affine align
     # -b is mutually exclusive with -g/-e
