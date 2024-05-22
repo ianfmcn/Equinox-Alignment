@@ -65,7 +65,7 @@ def main():
     
     args = parser.parse_args()
 
-    # Read and parse sequences of imput files
+    # Read and parse sequences of fasta and fastq files
 
     #reference genome, map pair with id (chromosome number) and sequence
     reference_sequences = {}
