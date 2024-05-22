@@ -14,70 +14,61 @@ def main():
 
     # Input
     parser.add_argument("txt", help="Txt file", type=str)
-    #for testing parsing, use .fa or .fastq
+    #for testing parsing, use .fa or .fastq for equinox
     
     # Output
     parser.add_argument("-o", "--out", help="Write output to file. "\
                 "Default: stdout", metavar="FILE", type=str, required=False)
     
     # Alignment Penalties
-    parser.add_argument("-m", "--match-reward", \
-                help="match reward", \
+    al = parser.add_argument_group()
+    al.title = "Required alignment args"
+    al.add_argument("-m", help="match reward", \
                 type=int, metavar="INT",  required=True)
-    parser.add_argument("-s", "--mismatch-penalty", 
-                help="mismatch penalty", \
+    al.add_argument("-s", help="mismatch penalty", \
                 type=int, metavar="INT",  required=True)
-    parser.add_argument("-d", "--indel-penalty", \
-                help="indel penalty", \
+    al.add_argument("-d", help="indel penalty", \
                 type=int, metavar="INT",  required=True)
     
     # Optional Alignment Arguments
 
-    # group gap open and gap extend together
-    gap = parser.add_argument_group(title='Affine required args', required=False)
-    gap.add_argument("-g", "--gap-open", 
-                help="gap open penalty", \
-                type=int, metavar="INT",  required=True)
-    gap.add_argument("-e", "--gap-ext", \
-                help="gap extend penalty", \
-                type=int, metavar="INT",  required=True)
-
-    # use either bandwidth align OR affine align
-    alt = parser.add_mutually_exclusive_group(title='Alternate alignment args', required=False)
-    alt.add_argument("-b", "--bandwidth", \
-                help="allowed bandwidth", \
+    # group alternate alignment args
+    alt = parser.add_argument_group()
+    alt.title = "Alternate alignment algorithm arguments"
+    alt.add_argument("-b", help="allowed bandwidth", \
                 type=int, metavar="INT",  required=False)
-    alt.add_argument(gap)
-
-    '''parser.group("Configuring output format",
-        parser:flag "-v --verbose",
-        parser:flag "--use-colors",
-        parser:option "--encoding"
-    )'''
+    alt.add_argument("-g",help="gap open penalty", \
+                type=int, metavar="INT",  required=False)
+    alt.add_argument("-e", help="gap extend penalty", \
+                type=int, metavar="INT",  required=False)
     
     # Other Optional Arguments
     
-    other = parser.add_argument_group(title='Other optional args', required=False)
-    other.add_argument("-k", "--min-seed-len", \
-                help="minimum seed length", \
+    other = parser.add_argument_group()
+    other.title = "Other optional args"
+    other.add_argument("-k", help="minimum seed length", \
                 type=int, metavar="INT",  required=False)
-    other.add_argument("-c", "--max-occ", \
-                help="max-occ", \
+    other.add_argument("-c", help="max-occ", \
                 type=int, metavar="INT",  required=False)
-    other.add_argument("-R", "--RG-line", \
-                help="RG-line", \
+    other.add_argument("-R",help="RG-line", \
                 type=int, metavar="INT",  required=False)
-    other.add_argument("-t", "--cut-output", \
-                help="cut-output", \
+    other.add_argument("-t", help="cut-output", \
                 type=int, metavar="INT",  required=False)
-    other.add_argument("-C", "--comment-FAST", \
-                help="comment-FAST", \
+    other.add_argument("-C", help="comment-FAST", \
                 type=int, metavar="INT",  required=False)
-    other.add_argument("-v", "--verbose-level", \
-                help="verbose-level", \
+    other.add_argument("-v", help="verbose-level", \
                 type=int, metavar="INT",  required=False)
     
     args = parser.parse_args()
+    
+    # use either bandwidth align OR affine align
+    # -b is mutually exclusive with -g/-e
+    if args.b is not None:
+        if (args.g is not None) or (args.e is not None):
+            parser.error("Cannot use -b and -g/-e together")
+    # if -g, must have -e
+    if (args.g is not None and args.e is None) or (args.g is None and args.e is not None):
+        parser.error("Must use -g/-e together")
 
     # Read and parse sequences of fasta and fastq files
 
@@ -90,20 +81,13 @@ def main():
     reads = []
     for record in SeqIO.parse(args.reads, "fastq"):
         reads.append(str(record.seq))
-    
-    
-    if (args.g is not None and args.e is None) or (args.g is None and args.e is not None):
-        print('Cannot use gap open without gap extend')
 
-    if (args.g is not None):
-        print(args.g)
-
-    else:
-        align = locAL("GATA", "GA", args.match_reward, args.mismatch_penalty, args.indel_penalty, True)
-        print(align)
+    #default for now
+    align = locAL("GATA", "GA", args.m, args.s, args.d, True)
+    print(align)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":#
     main()
 '''
 if -b: run BandedAlignment
@@ -112,39 +96,3 @@ else: run locAL
 
 --> other options
 '''
-    
-'''
-#from local.py
-#establish arguments
-    file_index = [idx for idx, s in enumerate(sys.argv) if '.txt' in s][0]
-    seq_file = sys.argv[file_index]
-    file = open(seq_file)
-    content = file.readlines()
-    #find two instances of '>'
-    #read next line
-    index = []
-    i = 0
-    for line in content:
-        l = line.strip()
-        if len(l) > 0 and l[0] == '>':
-            index.append(i+1)
-        i += 1
-    s = content[index[0]].strip()
-    t = content[index[1]].strip()
-    file.close()
-
-    match = int(sys.argv[sys.argv.index("-m")+1])
-    mismatch = int(sys.argv[sys.argv.index("-s")+1])
-    indel = int(sys.argv[sys.argv.index("-d")+1])
-
-    align_command = [s for s in sys.argv if "-a" in s]
-    if len(align_command) == 0:
-        align = False
-    else:
-        align = True
-        
-    alignment = main(s, t, match, mismatch, indel, align)
-    print(alignment)
-'''
-
-#vim :set ff=unix :wq 
