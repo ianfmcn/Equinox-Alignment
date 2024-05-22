@@ -2,10 +2,10 @@ import io
 import sys
 
 def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_extension_penalty, s, t):
-    maxScore = None
-    maxMiddle = None
-    maxLower = None
-    maxUpper = None
+    maxScore = 0
+    maxMiddle = 0
+    maxLower = 0
+    maxUpper = 0
 
     # s down, t across
     n = len(s)+1
@@ -34,11 +34,11 @@ def AffineAlignment(match_reward, mismatch_penalty, gap_opening_penalty, gap_ext
         middle_backtrack[0][j] = 1 # side
 
     # fill in other table values
-    str1 = None
-    str2 = None
-    down = None # lower
-    side = None # upper
-    diag = None # midde
+    str1 = ""
+    str2 = ""
+    down = 0 # lower
+    side = 0 # upper
+    diag = 0 # midde
     for i in range(1,n):
         for j in range(1,m):
             # lower
