@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+from Bio import SeqIO
 from locAL import main as locAL
 from BandedAlignment import main as BandedAL
 #from AffineAlignment import main as AffineAL
@@ -66,6 +67,18 @@ def main():
                 type=int, metavar="INT",  required=False)
     
     args = parser.parse_args()
+
+    # Read and parse sequences of imput files
+
+    #reference genome, map pair with id (chromosome number) and sequence
+    reference_sequences = {}
+    for record in SeqIO.parse(args.reference, "fasta"):
+        reference_sequences[record.id] = str(record.seq)
+
+    #list of read sequences
+    reads = []
+    for record in SeqIO.parse(args.reads, "fastq"):
+        reads.append(str(record.seq))
     
     align = locAL("GATA", "GA", args.match_reward, args.mismatch_penalty, args.indel_penalty, True)
     print(align)
