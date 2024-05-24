@@ -18,11 +18,23 @@ Equinox is made to have similar usage to [BWA MEM](https://bio-bwa.sourceforge.n
 equinox reference.fa read1.fq read2.fq > output.sam
 ```
 Example fastq files can be found here: [Fastq Files](https://drive.google.com/drive/folders/1PVqUAGe60cw056kn5xN-kyurCVh9kETV?usp=sharing)
+
+Basic test files can be found in the example_files folder.
+
 ## Complete Usage Instructions
 ```
-equinox [-k minSeedLen] [-w bandWidth] [-c maxOcc] [-A matchScore] [-B mmPenalty]\
-        [-O gapOpenPen] [-E gapExtPen] [-R RGline] [-T cutOutput] [-C commentFAST]\
-        [-v verboseLevel] db.prefix reads.fq [mates.fq]
+equinox [-m matchScore] [-s mmPenalty] [-d indelPenalty] [-b bandWidth]\
+        [-g gapOpenPen] [-e gapExtPen] [-k minSeedLen] [-c maxOcc] [-R RGline]\
+        [-t cutOutput] [-C commentFAST] [-v verboseLevel] db.prefix reads.fq [mates.fq]
+```
+
+## Usage Instructions for Progress Report
+```
+Make parsing.py from reference_code executable via chmod +x parsing.py  
+
+./parsing.py can be run with the arguments [-m, -s, -d, -g, -e, -b]
+
+Note: file parsing to obtain reads from .fa/.fq files has not been fully implemented yet; running ./parsing.py will return alignment of a placeholder pair of sequences.
 ```
 
 ## Credits
