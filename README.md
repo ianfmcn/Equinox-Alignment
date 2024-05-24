@@ -30,7 +30,7 @@ equinox [-m matchScore] [-s mmPenalty] [-d indelPenalty] [-b bandWidth]\
 
 ## Usage Instructions for Progress Report
 ```
-Make parsing.py from reference_code executable via ```chmod +x parsing.py```
+Make parsing.py from reference_code executable via chmod +x parsing.py
 
 ./parsing.py can be run with the arguments [-m, -s, -d, -g, -e, -b]
 
