@@ -37,6 +37,9 @@ Note: file parsing to obtain reads from .fa/.fq files has not been fully impleme
 The alignment code for BandedAlignment can be tested for single end alignment by running that py script directly using the example files. (It currently contains a placeholder main function to parse arguments.)
 python3 ./reference_code/BandedAlignment.py ./example_files/test_reference.fa ./example_files/test_sequence.fq 5 -m 1 -s -1 -d -1 > test_banded.txt
 This test_banded.txt is also in the folder example_files.
+
+The alignment code for Local Alignment can be tested for single end alignment by running the py script described below. (test, test1, and test2.txt are the test files for this alignment, with the first string being the read, and the second the genome.)
+py ./reference_code/local.py ./example_files/test.txt -m 1 -s -1 -d -1 -a
 ```
 
 ## Credits
