@@ -2,6 +2,7 @@ from Bio import SeqIO
 import argparse
 import numpy as np
 
+# s is reference, t is genome
 def BandedAlignment(s, t, match_reward, mismatch_penalty, indel_penalty, band_parameter):
   
     n = len(s) + 1
@@ -87,8 +88,12 @@ def BandedAlignment(s, t, match_reward, mismatch_penalty, indel_penalty, band_pa
 
     rev1 = str1[::-1]
     rev2 = str2[::-1]
-    
-    return max_score, rev1, rev2
+    # We are 1-basing for genome locations
+    print(len(t), max_j, len(s), len(rev2))
+    locend = max_j
+    locstart =  locend - len(rev2)
+    locstr = str(locstart) + "-" + str(locend)
+    return max_score, rev1, rev2, locstr
 
 #main function included in this file for testing if the function works properly, delete afterward
 def main():
@@ -117,18 +122,20 @@ def main():
         best_aligned_ref = ""
         best_aligned_read = ""
         best_ref_id = ""
+        best_loc = ""
 
         for ref_id, ref_seq in reference_sequences.items():
-            max_score, rev1, rev2 = BandedAlignment(ref_seq, read, args.match, args.mismatch, args.indel, args.bandwidth)
+            max_score, rev1, rev2, loc = BandedAlignment(read, ref_seq, args.match, args.mismatch, args.indel, args.bandwidth)
             if max_score > best_score:
                 best_score = max_score
                 best_aligned_ref = rev1
                 best_aligned_read = rev2
                 best_ref_id = ref_id
+                best_loc = loc
 
         print(f"Read: {read}")
         print(f"Score: {best_score}")
-        print(f"{best_ref_id})")
+        print(f"{best_ref_id})", best_loc)
         print(f"{best_aligned_ref}")
         print(f"{best_aligned_read}")
         print("\n")
