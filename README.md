@@ -35,7 +35,8 @@ Make parsing.py from reference_code executable via chmod +x parsing.py
 
 Note: file parsing to obtain reads from .fa/.fq files has not been fully implemented yet; running ./parsing.py will return alignment of a placeholder pair of sequences.
 
-The alignment code for BandedAlignment can be tested for single end alignment by running that py script directly using the example files. (It currently contains a placeholder main function to parse arguments.
+The alignment code for BandedAlignment can be tested for single end alignment by running that py script directly using the example files. (It currently contains a placeholder main function to parse arguments.)
+python3 ./reference_code/BandedAlignment.py ./example_files/test_reference.fa ./example_files/test_sequence.fq 5 -m 1 -s -1 -d -1 > test_banded.txt
 ```
 
 ## Credits
