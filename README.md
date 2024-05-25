@@ -24,13 +24,13 @@ Basic test files can be found in the example_files folder.
 ## Complete Usage Instructions
 ```
 equinox [-m matchScore] [-s mmPenalty] [-d indelPenalty] [-b bandWidth]\
-        [-g gapOpenPen] [-e gapExtPen] db.prefix reads.fq [mates.fq]
+        db.prefix reads.fq [mates.fq]
 ```
 
 ## Usage Instructions for Progress Report
 ```
 Make parsing.py from reference_code executable via chmod +x parsing.py
-./parsing.py can be run with the arguments [-m, -s, -d, -g, -e, -b]
+./parsing.py can be run with the arguments [-m, -s, -d, -b]
 
 Note: file parsing to obtain reads from .fa/.fq files has not been fully implemented yet; running ./parsing.py will return alignment of a placeholder pair of sequences.
 
