@@ -4,7 +4,6 @@ import argparse
 from Bio import SeqIO
 from locAL import main as locAL
 from BandedAlignment import BandedAlignment as BandedAL
-from AffineAlignment import AffineAlignment as AffineAL
 
 def main():
     parser = argparse.ArgumentParser(
@@ -33,32 +32,9 @@ def main():
                 type=int, metavar="INT",  required=False)
     
     # Optional Alignment Arguments
-
-    # group alternate alignment args
     alt = parser.add_argument_group()
     alt.title = "arguments for alternate alignment algorithms"
     alt.add_argument("-b", help="allowed bandwidth for banded alignment", \
-                type=int, metavar="INT",  required=False)
-    alt.add_argument("-g",help="gap open penalty for affine alignment", \
-                type=int, metavar="INT",  required=False)
-    alt.add_argument("-e", help="gap extend penalty; a gap of size k cost '{-g} + {-e}*k'", \
-                type=int, metavar="INT",  required=False)
-    
-    # Other Optional Arguments
-    
-    other = parser.add_argument_group()
-    other.title = "other optional args"
-    other.add_argument("-k", help="minimum seed length", \
-                type=int, metavar="INT",  required=False)
-    other.add_argument("-c", help="max-occ", \
-                type=int, metavar="INT",  required=False)
-    other.add_argument("-R",help="RG-line", \
-                type=int, metavar="INT",  required=False)
-    other.add_argument("-t", help="cut-output", \
-                type=int, metavar="INT",  required=False)
-    other.add_argument("-C", help="comment-FAST", \
-                type=int, metavar="INT",  required=False)
-    other.add_argument("-v", help="verbose-level", \
                 type=int, metavar="INT",  required=False)
     
     args = parser.parse_args()
@@ -73,15 +49,6 @@ def main():
         second = args.fa[1][args.fa[1].index("."):]
         if first != second:
             parser.error("Input files must be same format")
-    
-    # use either bandwidth align OR affine align
-    # if -b, no -g -e
-    if args.b is not None:
-        if (args.g is not None) or (args.e is not None):
-            parser.error("Cannot use -b and -g/-e together")
-    # if -g, must have -e
-    if (args.g is not None and args.e is None) or (args.g is None and args.e is not None):
-        parser.error("Must use -g/-e together")
     
     # penalties must be negative (-s -d -g -e)
     if args.s >= 0:
@@ -108,14 +75,10 @@ def main():
         if args.d is None:
             parser.error("the following arguments are required: -d")    
         if args.d >= 0:
-            parser.error("Alignment penalties must be negative")
+            parser.error("Alignment penalties must be negative")    
+        if args.b <= 0:
+            parser.error("Bandwidth must be positive")
         align = BandedAL(s, t, args.m, args.s, args.d, args.b)
-    elif args.g is not None:
-        if args.d is not None:
-            parser.error("the following arguments are NOT required: -d")  
-        if args.g >= 0 or args.e >= 0:
-            parser.error("Alignment penalties must be negative")
-        align = "affine" #AffineAL(args.m, args.s, args.g, args.e, s, t)
     else:
         if args.d is None:
             parser.error("the following arguments are required: -d")
