@@ -144,6 +144,7 @@ if __name__ == "__main__":
     alignment = main(s, t, match, mismatch, indel, align)
     print(alignment)
 
+#py local.py test.txt -m 1 -s -1 -d -1 -a
 '''
 https://www.geeksforgeeks.org/command-line-arguments-in-python/
 https://stackoverflow.com/questions/2170900/get-first-list-index-containing-sub-string
