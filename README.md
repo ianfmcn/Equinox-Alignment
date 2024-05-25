@@ -35,6 +35,8 @@ Make parsing.py from reference_code executable via chmod +x parsing.py
 ./parsing.py can be run with the arguments [-m, -s, -d, -g, -e, -b]
 
 Note: file parsing to obtain reads from .fa/.fq files has not been fully implemented yet; running ./parsing.py will return alignment of a placeholder pair of sequences.
+
+The alignment code for BandedAlignment can be tested for single end alignment by running that py script directly. (It currently contains a placeholder main function to parse arguments.
 ```
 
 ## Credits
