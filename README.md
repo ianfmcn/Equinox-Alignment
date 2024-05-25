@@ -24,8 +24,7 @@ Basic test files can be found in the example_files folder.
 ## Complete Usage Instructions
 ```
 equinox [-m matchScore] [-s mmPenalty] [-d indelPenalty] [-b bandWidth]\
-        [-g gapOpenPen] [-e gapExtPen] [-k minSeedLen] [-c maxOcc] [-R RGline]\
-        [-t cutOutput] [-C commentFAST] [-v verboseLevel] db.prefix reads.fq [mates.fq]
+        [-g gapOpenPen] [-e gapExtPen] db.prefix reads.fq [mates.fq]
 ```
 
 ## Usage Instructions for Progress Report
