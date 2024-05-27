@@ -24,7 +24,7 @@ Basic test files can be found in the example_files folder.
 ## Complete Usage Instructions
 ```
 equinox -m matchScore -s mmPenalty -d indelPenalty [-b bandWidth]\
-        reference.fa reads.fq [mates.fq] -o output.txt
+         reference.fa reads.fq [mates.fq] -o output.sam
 ```
 
 ## Usage Instructions for Progress Report
