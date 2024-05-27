@@ -56,19 +56,13 @@ def main():
 
     # Read and parse sequences of fasta and fastq files
 
-    #reference genome, map pair with id (chromosome number) and sequence
     reference_sequences = {}
     for record in SeqIO.parse(args.reference, "fasta"):
         reference_sequences[record.id] = str(record.seq)
 
-    #list of read sequences
     reads = []
     for record in SeqIO.parse(args.reads, "fastq"):
         reads.append(str(record.seq))
-        
-    #default for now
-    s = "GATA"
-    t = "GA"
 
     # decide which alignment to use
     if args.b is not None:
@@ -78,16 +72,53 @@ def main():
             parser.error("Alignment penalties must be negative")    
         if args.b <= 0:
             parser.error("Bandwidth must be positive")
-        align = BandedAL(s, t, args.m, args.s, args.d, args.b)
+        # Perform alignment for each read
+        for read in reads:
+            best_score = float('-inf')
+            best_aligned_ref = ""
+            best_aligned_read = ""
+            best_ref_id = ""
+            best_loc = ""
+            for ref_id, ref_seq in reference_sequences.items():
+                max_score, rev1, rev2, loc = BandedAL(ref_seq, read, args.m, args.s, args.d, args.b)
+                if max_score > best_score:
+                    best_score = max_score
+                    best_aligned_ref = rev1
+                    best_aligned_read = rev2
+                    best_ref_id = ref_id
+                    best_loc = loc
+            print(f"Read: {read}")
+            print(f"Score: {best_score}")
+            print(f"{best_ref_id})", best_loc)
+            print(f"{best_aligned_ref}")
+            print(f"{best_aligned_read}")
+            print("\n")
     else:
         if args.d is None:
             parser.error("the following arguments are required: -d")
         if args.d >= 0:
             parser.error("Alignment penalties must be negative")
-        align = locAL(s, t, args.m, args.s, args.d, True)
-
-    print(align)
-
+        # Perform alignment for each read
+        for read in reads:
+            best_score = float('-inf')
+            best_aligned_ref = ""
+            best_aligned_read = ""
+            best_ref_id = ""
+            best_loc = ""
+            for ref_id, ref_seq in reference_sequences.items():
+                max_score, rev1, rev2, loc = locAL(ref_seq, read, args.m, args.s, args.d)
+                if max_score > best_score:
+                    best_score = max_score
+                    best_aligned_ref = rev1
+                    best_aligned_read = rev2
+                    best_ref_id = ref_id
+                    best_loc = loc
+            print(f"Read: {read}")
+            print(f"Score: {best_score}")
+            print(f"{best_ref_id})", best_loc)
+            print(f"{best_aligned_ref}")
+            print(f"{best_aligned_read}")
+            print("\n")
 
 if __name__ == "__main__":#
     main()
