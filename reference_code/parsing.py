@@ -51,19 +51,25 @@ def main():
     for record in SeqIO.parse(args.fa, "fasta"):
         reference_sequences[record.id] = str(record.seq)
 
-    reads = pd.DataFrame()
+    reads = pd.DataFrame(columns =  ["id", "flag", "rname", "pos", "mapq", "cigar", "rnext", "pnext", "tlen", "seq", "quality"])
 
     # only single end for now
     for file in args.fq:
         for record in SeqIO.parse(file, "fastq"):
             #print("%s %i" % (record.id, len(record)))
-            reads["seq"] = str(record.seq)
-            reads["id"] = (str(record.id))
-            reads["seq_score"] = (str(record.description))
+            record_score = record.format("fastq").split('\n')[-2]
+            reads.loc[-1] = [str(record.id), '*', ' ', ' ', ' ', '*', '*', '*', '*', str(record.seq), str(record_score)]
+            reads.index = reads.index + 1
 
-    print(reads)
+            #reads = reads.reset_index()
 
-    '''
+    #id flag rname(chr) pos mapq cigar rnext pnext tlen seq quality
+    #record.id * chr# start_pos max_score * * * * record.seq record.quality
+    # rname pos mapq
+
+    #print(reads)
+
+    #'''
     # decide which alignment to use
     if args.b is not None:
         if args.d is None:
@@ -90,6 +96,8 @@ def main():
                     best_loc = loc
 
             #reads["seq" == read]["align_score"] = best_score
+            print(reads[(reads["seq"] == read)]) # = best_ref_id
+            #expr[(expr['padj'] > 0.05 )]
             print(f"Read: {read}")
             print(f"Score: {best_score}")
             print(f"{best_ref_id})", best_loc)
@@ -103,7 +111,7 @@ def main():
             parser.error("Alignment penalties must be negative")
 
         # Perform alignment for each read
-        for read in reads:
+        for read in reads["seq"]:
             best_score = float('-inf')
             best_aligned_ref = ""
             best_aligned_read = ""
@@ -123,12 +131,11 @@ def main():
             print(f"{best_aligned_ref}")
             print(f"{best_aligned_read}")
             print("\n")
-        '''
+        #'''
+
+    print(reads)
 
 if __name__ == "__main__":#
     main()
 
 #python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 > ./example_files/test_banded.txt
-
-
-#record.id * chr# start_pos max_score * * * * record.seq record.score *
