@@ -43,8 +43,15 @@ py ./reference_code/local.py ./example_files/test.txt -m 1 -s -1 -d -1 -a
 
 Note 05/26/24:
 We have worked on this project further, and many of the files and test files have been altered. The code can no longer be run as described above. Please run the commands below to see our project in action.
+
+IN PYTHON:
 python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_locAL.txt
 python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 -o ./example_files/test_banded.txt
+
+EXECUTABLE:
+chmod +x parsing.py
+./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_locAL.txt
+./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 -o ./example_files/test_banded.txt
 ```
 
 ## Credits
