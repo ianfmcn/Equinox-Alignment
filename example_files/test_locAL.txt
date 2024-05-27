@@ -1,0 +1,36 @@
+length reference: 32, length read: 10, length alignment: 10, end index alignmeent: 10
+length reference: 32, length read: 10, length alignment: 10, end index alignmeent: 29
+Read: ATGCGTACGT
+Score: 10
+chr1) 0-10
+ATGCGTACGT
+ATGCGTACGT
+
+
+length reference: 32, length read: 9, length alignment: 10, end index alignmeent: 22
+length reference: 32, length read: 9, length alignment: 10, end index alignmeent: 10
+Read: GCTAGCAGC
+Score: 8
+chr1) 12-22
+GCTAGCTAGC
+GCTAGC-AGC
+
+
+length reference: 32, length read: 10, length alignment: 10, end index alignmeent: 24
+length reference: 32, length read: 10, length alignment: 11, end index alignmeent: 25
+Read: TAACGAGCGT
+Score: 6
+chr1) 14-24
+TAGCTAGCGT
+TAACGAGCGT
+
+
+length reference: 32, length read: 9, length alignment: 11, end index alignmeent: 14
+length reference: 32, length read: 9, length alignment: 10, end index alignmeent: 32
+Read: CGACGGAGC
+Score: 6
+chr2) 22-32
+CGTACGTAGC
+CG-ACGGAGC
+
+
