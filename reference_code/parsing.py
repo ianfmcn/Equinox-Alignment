@@ -31,8 +31,8 @@ def main():
     al.add_argument("-s", help="penalty for a mismatch", \
                 type=int, metavar="INT",  required=True)
     # in bwa mem, -s == -d (I think)
-    al.add_argument("-d", help="penalty for an indel. Required for local and banded alignment, but not for affine.", \
-                type=int, metavar="INT",  required=False)
+    al.add_argument("-d", help="penalty for an indel", \
+                type=int, metavar="INT",  required=True)
     
     # Optional Alignment Arguments
     alt = parser.add_argument_group()
@@ -73,9 +73,7 @@ def main():
 
     #'''
     # decide which alignment to use
-    if args.b is not None:
-        if args.d is None:
-            parser.error("the following arguments are required: -d")    
+    if args.b is not None: #bandwidth align
         if args.d >= 0:
             parser.error("Alignment penalties must be negative")    
         if args.b <= 0:
@@ -100,9 +98,7 @@ def main():
             reads.loc[reads['seq']==read, ['rname']] = best_ref_id
             reads.loc[reads['seq']==read, ['pos']] = int(best_loc.split('-')[0])
             reads.loc[reads['seq']==read, ['mapq']] = int(best_score)
-    else:
-        if args.d is None:
-            parser.error("the following arguments are required: -d")
+    else: #local align
         if args.d >= 0:
             parser.error("Alignment penalties must be negative")
 
@@ -136,5 +132,5 @@ def main():
 if __name__ == "__main__":#
     main()
 
-#python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_locAL.txt
+#python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_local.txt
 #python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 -o ./example_files/test_banded.txt
