@@ -28,7 +28,7 @@ def locAL(ref, read, match, mismatch, indel):
         for j in range (1, m):
             down = score[i-1][j] + indel
             side = score[i][j-1] + indel
-            if s[i-1] == t[j-1]:
+            if ref[i-1] == read[j-1]:
                 diag = score[i-1][j-1] + match
             else:
                 diag = score[i-1][j-1] + mismatch
