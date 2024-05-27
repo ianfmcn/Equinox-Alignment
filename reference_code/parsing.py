@@ -95,15 +95,9 @@ def main():
                     best_ref_id = ref_id
                     best_loc = loc
 
-            #reads["seq" == read]["align_score"] = best_score
-            print(reads[(reads["seq"] == read)]) # = best_ref_id
-            #expr[(expr['padj'] > 0.05 )]
-            print(f"Read: {read}")
-            print(f"Score: {best_score}")
-            print(f"{best_ref_id})", best_loc)
-            print(f"{best_aligned_ref}")
-            print(f"{best_aligned_read}")
-            print("\n")
+            reads.loc[reads['seq']==read, ['rname']] = best_ref_id
+            reads.loc[reads['seq']==read, ['pos']] = best_loc.split('-')[0]
+            reads.loc[reads['seq']==read, ['mapq']] = best_score
     else:
         if args.d is None:
             parser.error("the following arguments are required: -d")
@@ -125,13 +119,10 @@ def main():
                     best_aligned_read = rev2
                     best_ref_id = ref_id
                     best_loc = loc
-            print(f"Read: {read}")
-            print(f"Score: {best_score}")
-            print(f"{best_ref_id})", best_loc)
-            print(f"{best_aligned_ref}")
-            print(f"{best_aligned_read}")
-            print("\n")
-        #'''
+
+            reads.loc[reads['seq']==read, ['rname']] = best_ref_id
+            reads.loc[reads['seq']==read, ['pos']] = best_loc.split('-')[0]
+            reads.loc[reads['seq']==read, ['mapq']] = best_score
 
     print(reads)
 

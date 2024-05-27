@@ -79,7 +79,7 @@ def locAL(ref, read, match, mismatch, indel):
     rev2 = str2[::-1]
 
     # We are 1-basing for genome locations
-    print(f"length reference: {len(ref)}, length read: {len(read)}, length alignment: {len(rev1)}, end index alignmeent: {max_i}")
+    #print(f"length reference: {len(ref)}, length read: {len(read)}, length alignment: {len(rev1)}, end index alignmeent: {max_i}")
     locend = max_i
     locstart =  locend - len(rev1)
     locstr = str(locstart) + "-" + str(locend)
