@@ -51,19 +51,13 @@ def main():
     for record in SeqIO.parse(args.fa, "fasta"):
         reference_sequences[record.id] = str(record.seq)
 
-    reads = pd.DataFrame()
-
+    reads = []
     # only single end for now
     for file in args.fq:
         for record in SeqIO.parse(file, "fastq"):
             #print("%s %i" % (record.id, len(record)))
-            reads["seq"] = str(record.seq)
-            reads["id"] = (str(record.id))
-            reads["seq_score"] = (str(record.description))
+            reads.append(str(record.seq))
 
-    print(reads)
-
-    '''
     # decide which alignment to use
     if args.b is not None:
         if args.d is None:
@@ -74,7 +68,7 @@ def main():
             parser.error("Bandwidth must be positive")
 
         # Perform alignment for each read
-        for read in reads["seq"]:
+        for read in reads:
             best_score = float('-inf')
             best_aligned_ref = ""
             best_aligned_read = ""
@@ -123,7 +117,6 @@ def main():
             print(f"{best_aligned_ref}")
             print(f"{best_aligned_read}")
             print("\n")
-        '''
 
 if __name__ == "__main__":#
     main()

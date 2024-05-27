@@ -24,7 +24,7 @@ Basic test files can be found in the example_files folder.
 ## Complete Usage Instructions
 ```
 equinox [-m matchScore] [-s mmPenalty] [-d indelPenalty] [-b bandWidth]\
-        db.prefix reads.fq [mates.fq]
+        db.prefix reads.fq [mates.fq] > output.txt
 ```
 
 ## Usage Instructions for Progress Report
