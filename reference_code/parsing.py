@@ -12,9 +12,12 @@ def main():
     )
 
     # Input
-    # accept 1 or more input files
-    # input files can be .fa or .fastq 
-    parser.add_argument("fa", help="FASTA or FASTQ file(s)", type=str, nargs='+')
+    # accept 1 reference file
+    parser.add_argument("fa", help="FASTA file of reference genome", type=str)
+
+
+    # accept 1 or more read files
+    parser.add_argument("fq", help="FASTQ file(s) of reads to align", type=str, nargs='+')
     
     # Output
     parser.add_argument("-o", "--out", help="Write output to file. "\
@@ -40,15 +43,8 @@ def main():
     args = parser.parse_args()
     
     # make sure there are not more than two files inputted
-    if len(args.fa) > 2:
+    if len(args.fq) > 2:
         parser.error("Input either 1 file for single read or 2 files for paired read")
-
-    # for multiple input files, files should be same format
-    if len(args.fa) == 2:
-        first = args.fa[0][args.fa[0].index("."):]
-        second = args.fa[1][args.fa[1].index("."):]
-        if first != second:
-            parser.error("Input files must be same format")
     
     # penalties must be negative (-s -d -g -e)
     if args.s >= 0:
@@ -57,11 +53,12 @@ def main():
     # Read and parse sequences of fasta and fastq files
 
     reference_sequences = {}
-    for record in SeqIO.parse(args.reference, "fasta"):
+    for record in SeqIO.parse(args.fa, "fasta"):
         reference_sequences[record.id] = str(record.seq)
 
     reads = []
-    for record in SeqIO.parse(args.reads, "fastq"):
+    # only single end for now
+    for record in SeqIO.parse(args.fq, "fastq"):
         reads.append(str(record.seq))
 
     # decide which alignment to use
@@ -122,13 +119,3 @@ def main():
 
 if __name__ == "__main__":#
     main()
-
-'''
-if -b: run BandedAlignment
-if -g and -e: run Affine
-else: run locAL
-
---> other options
-'''
-
-#s ref t genome
