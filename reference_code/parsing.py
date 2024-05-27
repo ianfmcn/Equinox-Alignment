@@ -19,6 +19,10 @@ def main():
     # accept 1 or more read files
     parser.add_argument("fq", help="FASTQ file(s) of reads to align", type=str, nargs='+')
     
+    # Output
+    parser.add_argument("-o", "--out", help="Write output to file. "\
+                "Default: stdout", type=str, required=True)
+    
     # Alignment Penalties
     al = parser.add_argument_group()
     al.title = "required arguments for local alignment"
@@ -122,12 +126,16 @@ def main():
             reads.loc[reads['seq']==read, ['pos']] = best_loc.split('-')[0]
             reads.loc[reads['seq']==read, ['mapq']] = best_score
 
-    reads = reads.reset_index()
     reads = reads.sort_values(by=['rname'])
-    print(reads)
+
+
+    #export DataFrame to text file
+    with open(args.out, 'w') as f:
+        df_string = reads.to_string(header=True, index=False)
+        f.write(df_string)
 
 if __name__ == "__main__":#
     main()
 
-#python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 > ./example_files/test_locAL.txt
-#python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 > ./example_files/test_banded.txt
+#python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_locAL.txt
+#python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 -o ./example_files/test_banded.txt
