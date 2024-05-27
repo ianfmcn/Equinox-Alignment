@@ -2,7 +2,7 @@
 
 import argparse
 from Bio import SeqIO
-from locAL import main as locAL
+from locAL import locAL as locAL
 from BandedAlignment import BandedAlignment as BandedAL
 
 def main():

@@ -1,31 +1,10 @@
-'''
-python locAl.py <seq-files> -m <match> -s <mismatch> -d <indel> -a
 
-seq-files: FASTA-formatted txt file containing two seq
-match, mismatch, indel: int scores
-
-output:
-score of best local alignment
-length of best local alignment
-alignment if '-a'
-
-python locAl.py p1seqs.txt -m 1 -s -10 -d -1
-'''
-
-'''
-file = open("datafile.txt")
-sequence = ''
-for line in file.readlines():
-    l = line.strip()
-
-sys.argv[0] = locAL.py
-
-'''
 #!/usr/bin/env python
-import sys
+from Bio import SeqIO
+import argparse
 import numpy as np
 
-def main(ref, read, match, mismatch, indel):
+def locAL(ref, read, match, mismatch, indel):
     #compute local alignment
     #score matrix (ref down, read across)
     n = len(ref)+1
@@ -99,44 +78,58 @@ def main(ref, read, match, mismatch, indel):
     rev1 = str1[::-1]
     rev2 = str2[::-1]
 
-    return_values = [str(max_score), str(len(rev1))]
-    
-    return str(max_score), str(len(rev1)), rev1, rev2
+    # We are 1-basing for genome locations
+    print(f"length reference: {len(ref)}, length read: {len(read)}, length alignment: {len(rev1)}, end index alignmeent: {max_i}")
+    locend = max_i
+    locstart =  locend - len(rev1)
+    locstr = str(locstart) + "-" + str(locend)
+    return max_score, rev1, rev2, locstr
+
+#main function included in this file for testing if the function works properly, delete afterward
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('reference', type=str)
+    parser.add_argument('reads', type=str)
+    parser.add_argument('-m', '--match', type=float, default=1)
+    parser.add_argument('-s', '--mismatch', type=float, default=-1)
+    parser.add_argument('-d', '--indel', type=float, default=-1)
+
+    args = parser.parse_args()
+
+    # Read and parse input files
+    reference_sequences = {}
+    for record in SeqIO.parse(args.reference, "fasta"):
+        reference_sequences[record.id] = str(record.seq)
+
+    reads = []
+    for record in SeqIO.parse(args.reads, "fastq"):
+        reads.append(str(record.seq))
+
+    # Perform alignment for each read
+    for read in reads:
+        best_score = float('-inf')
+        best_aligned_ref = ""
+        best_aligned_read = ""
+        best_ref_id = ""
+        best_loc = ""
+
+        for ref_id, ref_seq in reference_sequences.items():
+            max_score, rev1, rev2, loc = locAL(ref_seq, read, args.match, args.mismatch, args.indel)
+            if max_score > best_score:
+                best_score = max_score
+                best_aligned_ref = rev1
+                best_aligned_read = rev2
+                best_ref_id = ref_id
+                best_loc = loc
+
+        print(f"Read: {read}")
+        print(f"Score: {best_score}")
+        print(f"{best_ref_id})", best_loc)
+        print(f"{best_aligned_ref}")
+        print(f"{best_aligned_read}")
+        print("\n")
 
 if __name__ == "__main__":
-    #establish arguments
-    file_index = [idx for idx, s in enumerate(sys.argv) if '.txt' in s][0]
-    seq_file = sys.argv[file_index]
-    file = open(seq_file)
-    content = file.readlines()
-    #find two instances of '>'
-    #read next line
-    index = []
-    i = 0
-    for line in content:
-        l = line.strip()
-        if len(l) > 0 and l[0] == '>':
-            index.append(i+1)
-        i += 1
-    s = content[index[0]].strip()
-    t = content[index[1]].strip()
-    file.close()
+    main()
 
-    match = int(sys.argv[sys.argv.index("-m")+1])
-    mismatch = int(sys.argv[sys.argv.index("-s")+1])
-    indel = int(sys.argv[sys.argv.index("-d")+1])
-
-    align_command = [s for s in sys.argv if "-a" in s]
-    if len(align_command) == 0:
-        align = False
-    else:
-        align = True
-        
-    alignment = main(s, t, match, mismatch, indel, align)
-    print(alignment)
-
-#py local.py test.txt -m 1 -s -1 -d -1 -a
-'''
-https://www.geeksforgeeks.org/command-line-arguments-in-python/
-https://stackoverflow.com/questions/2170900/get-first-list-index-containing-sub-string
-'''
+#py local.py test.txt -m 1 -s -1 -d -1
