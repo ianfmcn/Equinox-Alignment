@@ -98,8 +98,8 @@ def main():
                     best_loc = loc
 
             reads.loc[reads['seq']==read, ['rname']] = best_ref_id
-            reads.loc[reads['seq']==read, ['pos']] = best_loc.split('-')[0]
-            reads.loc[reads['seq']==read, ['mapq']] = best_score
+            reads.loc[reads['seq']==read, ['pos']] = int(best_loc.split('-')[0])
+            reads.loc[reads['seq']==read, ['mapq']] = int(best_score)
     else:
         if args.d is None:
             parser.error("the following arguments are required: -d")
@@ -123,11 +123,10 @@ def main():
                     best_loc = loc
 
             reads.loc[reads['seq']==read, ['rname']] = best_ref_id
-            reads.loc[reads['seq']==read, ['pos']] = best_loc.split('-')[0]
-            reads.loc[reads['seq']==read, ['mapq']] = best_score
+            reads.loc[reads['seq']==read, ['pos']] = int(best_loc.split('-')[0])
+            reads.loc[reads['seq']==read, ['mapq']] = int(best_score)
 
-    reads = reads.sort_values(by=['rname'])
-
+    reads = reads.sort_values(by=['rname', 'pos'])
 
     #export DataFrame to text file
     with open(args.out, 'w') as f:
