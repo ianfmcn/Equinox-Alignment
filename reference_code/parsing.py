@@ -15,13 +15,8 @@ def main():
     # accept 1 reference file
     parser.add_argument("fa", help="FASTA file of reference genome", type=str)
 
-
     # accept 1 or more read files
     parser.add_argument("fq", help="FASTQ file(s) of reads to align", type=str, nargs='+')
-    
-    # Output
-    parser.add_argument("-o", "--out", help="Write output to file. "\
-                "Default: stdout", metavar="FILE", type=str, required=False)
     
     # Alignment Penalties
     al = parser.add_argument_group()
@@ -51,15 +46,16 @@ def main():
         parser.error("Alignment penalties must be negative")
 
     # Read and parse sequences of fasta and fastq files
-
     reference_sequences = {}
     for record in SeqIO.parse(args.fa, "fasta"):
         reference_sequences[record.id] = str(record.seq)
 
     reads = []
     # only single end for now
-    for record in SeqIO.parse(args.fq, "fastq"):
-        reads.append(str(record.seq))
+    for file in args.fq:
+        for record in SeqIO.parse(file, "fastq"):
+            #print("%s %i" % (record.id, len(record)))
+            reads.append(str(record.seq))
 
     # decide which alignment to use
     if args.b is not None:
@@ -69,6 +65,7 @@ def main():
             parser.error("Alignment penalties must be negative")    
         if args.b <= 0:
             parser.error("Bandwidth must be positive")
+
         # Perform alignment for each read
         for read in reads:
             best_score = float('-inf')
@@ -95,6 +92,7 @@ def main():
             parser.error("the following arguments are required: -d")
         if args.d >= 0:
             parser.error("Alignment penalties must be negative")
+
         # Perform alignment for each read
         for read in reads:
             best_score = float('-inf')
@@ -119,3 +117,5 @@ def main():
 
 if __name__ == "__main__":#
     main()
+
+#python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 > ./example_files/test_banded.txt
