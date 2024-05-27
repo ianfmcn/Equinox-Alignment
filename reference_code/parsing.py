@@ -61,8 +61,6 @@ def main():
             reads.loc[-1] = [str(record.id), '*', ' ', ' ', ' ', '*', '*', '*', '*', str(record.seq), str(record_score)]
             reads.index = reads.index + 1
 
-            #reads = reads.reset_index()
-
     #id flag rname(chr) pos mapq cigar rnext pnext tlen seq quality
     #record.id * chr# start_pos max_score * * * * record.seq record.quality
     # rname pos mapq
@@ -124,9 +122,12 @@ def main():
             reads.loc[reads['seq']==read, ['pos']] = best_loc.split('-')[0]
             reads.loc[reads['seq']==read, ['mapq']] = best_score
 
+    reads = reads.reset_index()
+    reads = reads.sort_values(by=['rname'])
     print(reads)
 
 if __name__ == "__main__":#
     main()
 
-#python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 > ./example_files/test_banded.txt
+#python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 > ./example_files/test_locAL.txt
+#python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 > ./example_files/test_banded.txt
