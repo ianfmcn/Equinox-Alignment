@@ -132,4 +132,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-#py local.py test.txt -m 1 -s -1 -d -1
+#python3 ./reference_code/local.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1
