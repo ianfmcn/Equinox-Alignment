@@ -9,7 +9,7 @@ score of best local alignment
 length of best local alignment
 alignment if '-a'
 
-python locAl.py p1seqs.txt -m 1 -s -10 -d -1 -a
+python locAl.py p1seqs.txt -m 1 -s -10 -d -1
 '''
 
 '''
@@ -25,11 +25,11 @@ sys.argv[0] = locAL.py
 import sys
 import numpy as np
 
-def main(s, t, match, mismatch, indel, align):
+def main(ref, read, match, mismatch, indel):
     #compute local alignment
-    #score matrix (s down, t across)
-    n = len(s)+1
-    m = len(t)+1
+    #score matrix (ref down, read across)
+    n = len(ref)+1
+    m = len(read)+1
     score = np.zeros((n, m), dtype=int)
 
     #initialize i = 0 and j = 0
@@ -81,18 +81,18 @@ def main(s, t, match, mismatch, indel, align):
     stop = False
     while stop == False:
         if score[i][j] == -1: #down arrow (indel)
-            str1 += s[i-1]
+            str1 += ref[i-1]
             str2 += "-"
             i -=1
         elif score[i][j] == 1: #side arrow (indel)
             str1 += "-"
-            str2 += t[j-1]
+            str2 += read[j-1]
             j -=1
         elif score[i][j] == 0: #score of 0 in initial matrix
             stop = True
         else: #diagonal arrow (match/mismatch)
-            str1 += s[i-1]
-            str2 += t[j-1]
+            str1 += ref[i-1]
+            str2 += read[j-1]
             i -= 1
             j -= 1
     #print(i, max_i, j, max_j)
@@ -100,17 +100,8 @@ def main(s, t, match, mismatch, indel, align):
     rev2 = str2[::-1]
 
     return_values = [str(max_score), str(len(rev1))]
-    if align == True:
-        return_values.append(rev1)
-        return_values.append(rev2)
-    '''
-    print("score: " + str(max_score))
-    print("length: " + str(len(rev1)))
-    if align == True:
-        print(rev1)
-        print(rev2)
-    '''
-    return return_values
+    
+    return str(max_score), str(len(rev1)), rev1, rev2
 
 if __name__ == "__main__":
     #establish arguments
