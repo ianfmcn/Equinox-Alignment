@@ -11,14 +11,6 @@ Install using PIP:
 ```
 pip install Equinox-Alignment
 ```
-
-## Getting Started
-Equinox is made to have similar usage to [BWA MEM](https://bio-bwa.sourceforge.net/bwa.shtml), which takes as inputs a reference genome file (.fa) and fastq read files (.fq), and outputs a sam file (.sam).
-```
-equinox reference.fa read1.fq read2.fq -o output.sam
-```
-Basic test files can be found in the example_files folder.
-
 ## Complete Usage Instructions
 ```
 equinox -m matchScore -s mmPenalty -d indelPenalty [-b bandWidth]\
