@@ -10,7 +10,6 @@ def BandedAlignment(ref, read, match_reward, mismatch_penalty, indel_penalty, ba
     max_score = 0
     max_i = 0
     max_j = 0
-    
 
     for i in range(1, ref_len):
         for j in range(1, read_len):
