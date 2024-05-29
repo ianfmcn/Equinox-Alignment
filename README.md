@@ -8,7 +8,7 @@ git clone https://github.com/ianfmcn/Equinox-Alignment
 ```
 ## Complete Usage Instructions
 ```
-python3 reference.fa read.fq -m matchScore -s mmPenalty -d indelPenalty [-b bandWidth] -o output.sam
+python3 parsing.py reference.fa read.fq -m matchScore -s mmPenalty -d indelPenalty [-b bandWidth] -o output.sam
 ```
 
 ## Usage Examples
