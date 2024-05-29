@@ -77,11 +77,12 @@ def main():
             for ref_rec in SeqIO.parse(args.fa, "fasta"):
                 if banded:
                     # Perform alignment for each read
-                    max_score, rev1, rev2, loc = BandedAL(ref_rec.seq, read_rec.seq, args.m, args.s, args.d, args.b)
+                    max_score, max_i, max_j = BandedAL(ref_rec.seq, read_rec.seq, args.m, args.s, args.d, args.b)
+                    min_score, min_i, min_j = BandedAL(ref_rec.seq[:max_i][::-1], read_rec.seq[:max_j][::-1], args.m, args.s, args.d, args.b)
                     if max_score > best_score:
                         best_score = max_score
                         best_ref_id = ref_rec.id
-                        best_loc = loc
+                        best_loc =  max_i - min_i
                 else:
                     # Perform alignment for each read
                     max_score, max_i, max_j = linear_locAL(ref_rec.seq, read_rec.seq, args.m, args.s, args.d)

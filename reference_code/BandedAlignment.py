@@ -1,98 +1,55 @@
 from Bio import SeqIO
 import argparse
-import numpy as np
 
-# s is reference, t is genome
 def BandedAlignment(ref, read, match_reward, mismatch_penalty, indel_penalty, band_parameter):
-  
     ref_len = len(ref) + 1
     read_len = len(read) + 1
-    score = np.zeros((ref_len, read_len), dtype=int)
+    current_row = [0] * (read_len)
+    previous_row = [0] * (read_len)
 
-    for j in range(1, read_len):
-        score[0][j] = 0
-    for i in range(1, ref_len):
-        score[i][0] = 0
-    
-    down = 0
-    side = 0
-    diag = 0
-    diff_down = 0
-    diff_side = 0
     max_score = 0
     max_i = 0
     max_j = 0
-  
+    
+
     for i in range(1, ref_len):
         for j in range(1, read_len):
             diff_down = abs(i - 1 - j)
             if diff_down < band_parameter:
-                down = score[i - 1][j] + indel_penalty
+                down = previous_row[j] + indel_penalty
             else:
                 down = -10000
 
             diff_side = abs(i - (j - 1))
             if diff_side < band_parameter:
-                side = score[i][j - 1] + indel_penalty
+                side = current_row[j - 1] + indel_penalty
             else: 
                 side = -10000
             if ref[i - 1] == read[j - 1]:
-                diag = score[i - 1][j - 1] + match_reward
-            else: 
-                diag = score[i - 1][j - 1] + mismatch_penalty
-            score[i][j] = max(down, side, diag, 0)
-            if max_score < score[i][j]:
-                max_score = score[i][j]
+                diag = previous_row[j - 1] + match_reward
+            else:
+                diag = previous_row[j - 1] + mismatch_penalty
+
+            current_row[j] = max(down, side, diag, 0)
+            if current_row[j] > max_score:
+                max_score = current_row[j]
                 max_i = i
                 max_j = j
+        
+        previous_row, current_row = current_row, [0] * (read_len + 1) 
+    return max_score, max_i, max_j
 
-    for i in range(ref_len - 1, 0, -1):
-        for j in range(read_len - 1, 0, -1):
-            if score[i][j] == 0:
-                score[i][j] = 0
-            elif score[i][j] == (score[i - 1][j] + indel_penalty):
-                score[i][j] = -1  # down arrow
-            elif score[i][j] == (score[i][j - 1] + indel_penalty):
-                score[i][j] = 1  # side arrow 
-            elif score[i][j] == (score[i - 1][j - 1] + match_reward):
-                score[i][j] = 3  # diagonal arrow
-            elif score[i][j] == (score[i - 1][j - 1] + mismatch_penalty):
-                score[i][j] = 3  # diagonal arrow
+ignore = """
+def find_start_indices(ref, read, match_reward, mismatch_penalty, indel_penalty, band_parameter, end_i, end_j):
+    ref_reversed = ref[:end_i][::-1]
+    read_reversed = read[:end_j][::-1]
 
-  #start backtrace at max_i, max_j
-    str1 = ""  
-    str2 = "" 
-    i = max_i
-    j = max_j
+    _, start_i_reversed, start_j_reversed = BandedAlignment(ref_reversed, read_reversed, match_reward, mismatch_penalty, indel_penalty, band_parameter)
 
-    stop = False
-    while stop == False:
-        if score[i][j] == -1:  # down arrow (indel)
-            str1 += ref[i - 1]
-            str2 += "-"
-            i -= 1
-        elif score[i][j] == 1:  # side arrow (indel)
-            str1 += "-"
-            str2 += read[j - 1]
-            j -= 1
-        elif score[i][j] == 0: #score of 0 in initial matrix
-            stop = True
-        else:  # diagonal arrow (match/mismatch)
-            str1 += ref[i - 1]
-            str2 += read[j - 1]
-            i -= 1
-            j -= 1
+    start_i = end_i - start_i_reversed + 1
+    start_j = end_j - start_j_reversed + 1
 
-    rev1 = str1[::-1]
-    rev2 = str2[::-1]
-    # We are 1-basing for genome locations
-    #print(f"length reference: {len(ref)}, length read: {len(read)}, length alignment: {len(rev1)}, end index alignmeent: {max_i}")
-    locend = max_i
-    locstart =  locend - len(rev1)
-    locstr = str(locstart) + "-" + str(locend)
-    return max_score, rev1, rev2, locstr
-
-#main function included in this file for testing if the function works properly, delete afterward
+    return start_i, start_j
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('reference', type=str)
@@ -116,29 +73,29 @@ def main():
     # Perform alignment for each read
     for read in reads:
         best_score = float('-inf')
-        best_aligned_ref = ""
-        best_aligned_read = ""
-        best_ref_id = ""
-        best_loc = ""
+        best_i = ""
+        best_j = ""
+        best_ref = ""
+        start_i = 0
+        start_j = 0
 
         for ref_id, ref_seq in reference_sequences.items():
-            max_score, rev1, rev2, loc = BandedAlignment(ref_seq, read, args.match, args.mismatch, args.indel, args.bandwidth)
+            max_score, max_i, max_j = BandedAlignment(ref_seq, read, args.match, args.mismatch, args.indel, args.bandwidth)
             if max_score > best_score:
                 best_score = max_score
-                best_aligned_ref = rev1
-                best_aligned_read = rev2
-                best_ref_id = ref_id
-                best_loc = loc
+                best_i = max_i
+                best_j = max_j
+                best_ref = ref_id
+
+        if best_score > float('-inf'):
+            start_i, start_j = find_start_indices(reference_sequences[best_ref], read, args.match, args.mismatch, args.indel, args.bandwidth, best_i, best_j)
 
         print(f"Read: {read}")
+        print(f"Reference sequence: {best_ref}")
         print(f"Score: {best_score}")
-        print(f"{best_ref_id})", best_loc)
-        print(f"{best_aligned_ref}")
-        print(f"{best_aligned_read}")
+        print(f"Alignment starts at ref index: {start_i} and read index: {start_j}")
+        print(f"Alignment ends at ref index: {best_i} and read index: {best_j}")
         print("\n")
 
 if __name__ == "__main__":
-    main()
-
-#test usage example
-#python3 ./reference_code/BandedAlignment.py ./example_files/test_reference.fa ./example_files/test_sequence.fq 5 -m 1 -s -1 -d -1 > ./example_files/test_banded.txt
+    main() """
