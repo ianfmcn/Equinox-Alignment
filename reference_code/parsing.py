@@ -4,6 +4,7 @@ import argparse
 from Bio import SeqIO
 import pandas as pd
 from locAL import locAL as locAL
+from linear_locAL import local_score as linear_locAL
 from BandedAlignment import BandedAlignment as BandedAL
 
 def main():
@@ -83,13 +84,14 @@ def main():
                         best_loc = loc
                 else:
                     # Perform alignment for each read
-                    max_score, rev1, rev2, loc = locAL(ref_rec.seq, read_rec.seq, args.m, args.s, args.d)
+                    max_score, max_i, max_j = linear_locAL(ref_rec.seq, read_rec.seq, args.m, args.s, args.d)
+                    min_score, min_i, min_j = linear_locAL(ref_rec.seq[:max_i][::-1], read_rec.seq[:max_j][::-1], args.m, args.s, args.d)
                     if max_score > best_score:
                         best_score = max_score
                         best_ref_id = ref_rec.id
-                        best_loc = loc
+                        best_loc = max_i - min_i
             record_score = read_rec.format("fastq").split('\n')[-2]
-            reads.loc[-1] = [str(read_rec.id), '*', best_ref_id, int(best_loc.split('-')[0]), int(best_score), '*', '*', '*', '*', str(read_rec.seq), str(record_score)]
+            reads.loc[-1] = [str(read_rec.id), '*', best_ref_id, int(best_loc), int(best_score), '*', '*', '*', '*', str(read_rec.seq), str(record_score)]
             reads.index = reads.index + 1
             #f.write(str(read_rec.id) + ' * ' + best_ref_id + str(int(best_loc.split('-')[0])) + str(int(best_score)) + ' * '*4 + str(read_rec.seq) + str(record_score) + "\n")
     # f.close()
