@@ -2,9 +2,16 @@
 Equinox Alignment is an alignment tool that matches sequence reads with reference genome data, and functions similarly to [BWA MEM](https://github.com/lh3/bwa).
 
 ## Installation
-Install in terminal:
+In terminal:
 ```
 git clone https://github.com/ianfmcn/Equinox-Alignment
+```
+Install Required Packages:\
+In terminal:
+```
+pip install Biopython
+pip install Pandas
+pip install argparse
 ```
 ## Complete Usage Instructions
 ```
