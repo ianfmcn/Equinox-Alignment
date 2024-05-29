@@ -5,43 +5,26 @@ Equinox Alignment is an alignment tool that matches sequence reads with referenc
 Install in terminal:
 ```
 git clone https://github.com/ianfmcn/Equinox-Alignment
-cd equinox; make
-```
-Install using PIP:
-```
-pip install Equinox-Alignment
 ```
 ## Complete Usage Instructions
 ```
-equinox -m matchScore -s mmPenalty -d indelPenalty [-b bandWidth]\
-         reference.fa reads.fq [mates.fq] -o output.sam
+python3 reference.fa read.fq -m matchScore -s mmPenalty -d indelPenalty [-b bandWidth] -o output.sam
 ```
 
-## Usage Instructions for Progress Report
-```
-Make parsing.py from reference_code executable via chmod +x parsing.py
-./parsing.py can be run with the arguments [-m, -s, -d, -b]
-
-Note: file parsing to obtain reads from .fa/.fq files has not been fully implemented yet; running ./parsing.py will return alignment of a placeholder pair of sequences.
-
-The alignment code for BandedAlignment can be tested for single end alignment by running that py script directly using the example files. (It currently contains a placeholder main function to parse arguments.)
-python3 ./reference_code/BandedAlignment.py ./example_files/test_reference.fa ./example_files/test_sequence.fq 5 -m 1 -s -1 -d -1 > test_banded.txt
-This test_banded.txt is also in the folder example_files.
-
-The alignment code for Local Alignment can be tested for single end alignment by running the py script described below. (test, test1, and test2.txt are the test files for this alignment, with the first string being the read, and the second the genome.)
-py ./reference_code/local.py ./example_files/test.txt -m 1 -s -1 -d -1 -a
-
-Note 05/26/24:
-We have worked on this project further, and many of the files and test files have been altered. The code can no longer be run as described above. Please run the commands below to see our project in action.
-
+## Usage Examples
 IN PYTHON:
+```
 python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_local.txt
 python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 -o ./example_files/test_banded.txt
+```
 
-EXECUTABLE:
+EXECUTABLE:\
+First, run:
+```
 chmod +x parsing.py
+```
+Then, run either of the following
+```
 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_local.txt
 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 -o ./example_files/test_banded.txt
 ```
-
-## Credits
