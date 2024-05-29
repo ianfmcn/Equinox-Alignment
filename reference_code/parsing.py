@@ -50,77 +50,52 @@ def main():
     if args.s >= 0:
         parser.error("Alignment penalties must be negative")
 
-    # Read and parse sequences of fasta and fastq files
-    reference_sequences = {}
-    for record in SeqIO.parse(args.fa, "fasta"):
-        reference_sequences[record.id] = str(record.seq)
-
-    reads = pd.DataFrame(columns =  ["id", "flag", "rname", "pos", "mapq", "cigar", "rnext", "pnext", "tlen", "seq", "quality"])
-
-    # only single end for now
-    for file in args.fq:
-        for record in SeqIO.parse(file, "fastq"):
-            #print("%s %i" % (record.id, len(record)))
-            record_score = record.format("fastq").split('\n')[-2]
-            reads.loc[-1] = [str(record.id), '*', ' ', ' ', ' ', '*', '*', '*', '*', str(record.seq), str(record_score)]
-            reads.index = reads.index + 1
-
-    #id flag rname(chr) pos mapq cigar rnext pnext tlen seq quality
-    #record.id * chr# start_pos max_score * * * * record.seq record.quality
-    # rname pos mapq
-
-    #print(reads)
-
-    #'''
-    # decide which alignment to use
+    local = True
+    banded = False
     if args.b is not None: #bandwidth align
         if args.d >= 0:
             parser.error("Alignment penalties must be negative")    
         if args.b <= 0:
             parser.error("Bandwidth must be positive")
-
-        # Perform alignment for each read
-        for read in reads["seq"]:
-            best_score = float('-inf')
-            best_aligned_ref = ""
-            best_aligned_read = ""
-            best_ref_id = ""
-            best_loc = ""
-            for ref_id, ref_seq in reference_sequences.items():
-                max_score, rev1, rev2, loc = BandedAL(ref_seq, read, args.m, args.s, args.d, args.b)
-                if max_score > best_score:
-                    best_score = max_score
-                    best_aligned_ref = rev1
-                    best_aligned_read = rev2
-                    best_ref_id = ref_id
-                    best_loc = loc
-
-            reads.loc[reads['seq']==read, ['rname']] = best_ref_id
-            reads.loc[reads['seq']==read, ['pos']] = int(best_loc.split('-')[0])
-            reads.loc[reads['seq']==read, ['mapq']] = int(best_score)
-    else: #local align
+        banded = True
+        local = False
+    
+    if local: #local align
         if args.d >= 0:
             parser.error("Alignment penalties must be negative")
 
-        # Perform alignment for each read
-        for read in reads["seq"]:
+    reads = pd.DataFrame(columns =  ["id", "flag", "rname", "pos", "mapq", "cigar", "rnext", "pnext", "tlen", "seq", "quality"])
+    
+    # Read and parse sequences of fasta and fastq files
+    #f = open("temp.txt", "w")
+    for file in args.fq:
+        for read_rec in SeqIO.parse(file, "fastq"):
             best_score = float('-inf')
-            best_aligned_ref = ""
-            best_aligned_read = ""
             best_ref_id = ""
             best_loc = ""
-            for ref_id, ref_seq in reference_sequences.items():
-                max_score, rev1, rev2, loc = locAL(ref_seq, read, args.m, args.s, args.d)
-                if max_score > best_score:
-                    best_score = max_score
-                    best_aligned_ref = rev1
-                    best_aligned_read = rev2
-                    best_ref_id = ref_id
-                    best_loc = loc
-
-            reads.loc[reads['seq']==read, ['rname']] = best_ref_id
-            reads.loc[reads['seq']==read, ['pos']] = int(best_loc.split('-')[0])
-            reads.loc[reads['seq']==read, ['mapq']] = int(best_score)
+            for ref_rec in SeqIO.parse(args.fa, "fasta"):
+                if banded:
+                    # Perform alignment for each read
+                    max_score, rev1, rev2, loc = BandedAL(ref_rec.seq, read_rec.seq, args.m, args.s, args.d, args.b)
+                    if max_score > best_score:
+                        best_score = max_score
+                        best_ref_id = ref_rec.id
+                        best_loc = loc
+                else:
+                    # Perform alignment for each read
+                    max_score, rev1, rev2, loc = locAL(ref_rec.seq, read_rec.seq, args.m, args.s, args.d)
+                    if max_score > best_score:
+                        best_score = max_score
+                        best_ref_id = ref_rec.id
+                        best_loc = loc
+            record_score = read_rec.format("fastq").split('\n')[-2]
+            reads.loc[-1] = [str(read_rec.id), '*', best_ref_id, int(best_loc.split('-')[0]), int(best_score), '*', '*', '*', '*', str(read_rec.seq), str(record_score)]
+            reads.index = reads.index + 1
+            #f.write(str(read_rec.id) + ' * ' + best_ref_id + str(int(best_loc.split('-')[0])) + str(int(best_score)) + ' * '*4 + str(read_rec.seq) + str(record_score) + "\n")
+    # f.close()
+    #id flag rname(chr) pos mapq cigar rnext pnext tlen seq quality
+    #record.id * chr# start_pos max_score * * * * record.seq record.quality
+    # rname pos mapq
 
     reads = reads.sort_values(by=['rname', 'pos'])
 
