@@ -17,8 +17,6 @@ Equinox is made to have similar usage to [BWA MEM](https://bio-bwa.sourceforge.n
 ```
 equinox reference.fa read1.fq read2.fq -o output.sam
 ```
-Example fastq files can be found here: [Fastq Files](https://drive.google.com/drive/folders/1PVqUAGe60cw056kn5xN-kyurCVh9kETV?usp=sharing)
-
 Basic test files can be found in the example_files folder.
 
 ## Complete Usage Instructions
