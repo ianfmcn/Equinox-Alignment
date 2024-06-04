@@ -17,7 +17,7 @@ def BandedAlignment(s, t, match, mismatch, indel, bandwidth):
     for i in range(1, n):
         i1 = (i - 1) % 2
         i2 = i % 2
-        print(score[i2, :])
+        #print(score[i2, :])
         score[i2, :] = 0  # Reset the current row
         
         for j in range(max(1, i - bandwidth), min(m, i + bandwidth)):
@@ -33,6 +33,6 @@ def BandedAlignment(s, t, match, mismatch, indel, bandwidth):
                 max_score = score[i2, j]
                 max_i = i
                 max_j = j
-        print(i2)
+        #print(i2)
     return max_score, max_i, max_j
 
