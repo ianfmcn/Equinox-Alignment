@@ -1,5 +1,5 @@
-   id flag rname pos mapq cigar rnext pnext tlen        seq    quality
-read1    *  chr1   0   10     *     *     *    * ATGCGTACGT JJJJJJJJJJ
-read2    *  chr1  12    8     *     *     *    *  GCTAGCAGC  JJJJJJJJJ
-read3    *  chr1  14    6     *     *     *    * TAACGAGCGT JJJJJJJJJJ
-read4    *  chr2  22    6     *     *     *    *  CGACGGAGC  JJJJJJJJJ
+   id flag rname  pos  mapq cigar rnext pnext tlen        seq    quality
+read1    *  chr1    0    10     *     *     *    * ATGCGTACGT JJJJJJJJJJ
+read3    *  chr1    3     4     *     *     *    * TAACGAGCGT JJJJJJJJJJ
+read2    *  chr2    0     5     *     *     *    *  GCTAGATCA  JJJJJJJJJ
+read4    *  chr2    7     3     *     *     *    *  CGACGGAGC  JJJJJJJJJ
