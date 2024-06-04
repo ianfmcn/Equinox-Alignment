@@ -20,10 +20,14 @@ python3 parsing.py reference.fa read.fq -m matchScore -s mmPenalty -d indelPenal
 ```
 
 ## Usage Examples
-IN PYTHON:
+IN PYTHON:\
+For Local Alignment:
 ```
 python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_local.sam
-python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 -o ./example_files/test_banded.sam
+```
+For Banded Alignment:
+```
+python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 3 -o ./example_files/test_banded.sam
 ```
 
 EXECUTABLE:\
