@@ -5,6 +5,7 @@ Equinox Alignment is an alignment tool that matches sequence reads with referenc
 In terminal:
 ```
 git clone https://github.com/ianfmcn/Equinox-Alignment
+cd Equinox-Alignment
 ```
 Install Required Packages:\
 In terminal:
@@ -21,8 +22,8 @@ python3 parsing.py reference.fa read.fq -m matchScore -s mmPenalty -d indelPenal
 ## Usage Examples
 IN PYTHON:
 ```
-python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_local.txt
-python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 -o ./example_files/test_banded.txt
+python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_local.sam
+python3 ./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 -o ./example_files/test_banded.sam
 ```
 
 EXECUTABLE:\
@@ -32,6 +33,6 @@ chmod +x parsing.py
 ```
 Then, run either of the following
 ```
-./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_local.txt
-./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 -o ./example_files/test_banded.txt
+./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -o ./example_files/test_local.sam
+./reference_code/parsing.py ./example_files/test_reference.fa ./example_files/test_sequence.fq -m 1 -s -1 -d -1 -b 5 -o ./example_files/test_banded.sam
 ```
